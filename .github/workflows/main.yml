@@ -1,18 +1,6 @@
 name: CodeSonar Neovim Build and Analyze
 
 on:
-  push:
-    branches:
-      - 'release/**'  # Feature Branches
-  pull_request:
-    branches:
-      - 'release/**'
-    paths:
-      - '**.cmake'
-      - '**/CMakeLists.txt'
-      - '**/CMakePresets.json'
-      - 'cmake.*/**'
-      - '.github/**'
   workflow_dispatch:
 
 concurrency:
@@ -67,11 +55,6 @@ jobs:
           cmake --build .deps
           cmake --preset ci
 
-      - name: Build Neovim
-        run: |
-          make -j $PARALLEL CMAKE_BUILD_TYPE=RelWithDebInfo
-          sudo make install
-
       - name: Checkout CodeSonar CI-Script
         uses: actions/checkout@v4
         with:
@@ -79,7 +62,7 @@ jobs:
           path: cso-scripts
 
       - name: Build and Analyze with CodeSonar
-        run: python3 cso-scripts/build_and_analyze.py codesonar.conf make -j $PARALLEL
+        run: python3 cso-scripts/build_and_analyze.py codesonar.conf make -j $PARALLEL CMAKE_BUILD_TYPE=RelWithDebInfo && make install
 
       - name: Upload SARIF to GitHub # Use this if you do not have GitHub Enterprise
         if: ${{ github.event.pull_request }}
@@ -99,34 +82,3 @@ jobs:
         with:
           sarif_file: warnings.sarif
           category: "CodeSecure CodeSonar"
-
-  old-cmake:
-    name: Test oldest supported cmake
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      CMAKE_URL: 'https://cmake.org/files/v3.16/cmake-3.16.0-Linux-x86_64.sh'
-      CMAKE_VERSION: '3.16.0'
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install minimum required version of cmake
-        run: |
-          curl --retry 5 --silent --show-error --fail -o /tmp/cmake-installer.sh "$CMAKE_URL"
-          mkdir -p "$BIN_DIR" /opt/cmake-custom
-          chmod a+x /tmp/cmake-installer.sh
-          /tmp/cmake-installer.sh --prefix=/opt/cmake-custom --skip-license
-          ln -sfn /opt/cmake-custom/bin/cmake "$BIN_DIR/cmake"
-          cmake_version="$(cmake --version | head -1)"
-          echo "$cmake_version" | grep -qF "cmake version $CMAKE_VERSION" || {
-            echo "Unexpected CMake version: $cmake_version"
-            exit 1
-          }
-
-      - name: Build dependencies
-        run: make deps
-
-      - name: Build Neovim
-        run: make CMAKE_FLAGS="-D CI_BUILD=ON -D CMAKE_INSTALL_PREFIX:PATH=$INSTALL_PREFIX"
-
-      - name: Install
-        run: make install

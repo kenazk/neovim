@@ -15,7 +15,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-c-cpp@v3
       - name: Run build-wrapper
         run: |
-          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make -j $PARALLEL CMAKE_BUILD_TYPE=RelWithDebInfo && make install
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} make CMAKE_BUILD_TYPE=RelWithDebInfo && make install
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

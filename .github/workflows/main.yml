@@ -20,7 +20,7 @@ env:
   CS_USER_HOME: /__w/neovim/neovim
   COMMIT_HASH: ${{ github.sha }}
   REPO_URL: "https://github.com/kenazk/neovim"
-  ROOT_TREE: "fossa" 
+  ROOT_TREE: "OSS-Projects/fossa" 
   PROJECT_NAME: "neovim"
 
 jobs:

@@ -26,7 +26,7 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/codesecure-se/curl-cso-builder:8.1p0
+      image: ghcr.io/codesecure-se/curl-cso-builder:8.2p0
 
     steps:
       - name: Set parallelism

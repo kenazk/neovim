@@ -26,9 +26,17 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/codesecure-se/curl-cso-builder:8.2p0
+      image: ubuntu
 
     steps:
+
+      - name: Download CodeSonar
+        run: |
+          sudo apt update
+          sudo apt install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl doxygen curl build-essentials python3 python3-requests
+          curl -sSf -o codesonar.tgz --user "$CSONAR_HUB_USER:$CSONAR_HUB_PASSWORD" "https://partnerdemo.codesonar.com/install/codesonar_gitlab_82p0.tgz"
+          tar xzf codesonar.tgz -C /opt
+        
       - name: Set parallelism
         run: echo "PARALLEL=`nproc`" >> $GITHUB_ENV
 

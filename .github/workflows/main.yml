@@ -21,7 +21,7 @@ env:
   COMMIT_HASH: ${{ github.sha }}
   REPO_URL: "https://github.com/kenazk/neovim"
   ROOT_TREE: "fossa" 
-  PROJECT_NAME: neovim
+  PROJECT_NAME: "neovim"
 
 jobs:
   CodeSonar_Analyze:

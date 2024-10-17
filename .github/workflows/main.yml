@@ -20,6 +20,8 @@ env:
   CS_USER_HOME: /__w/neovim/neovim
   COMMIT_HASH: ${{ github.sha }}
   REPO_URL: "https://github.com/kenazk/neovim"
+  ROOT_TREE: "fossa" 
+  PROJECT_NAME: neovim
 
 jobs:
   CodeSonar_Analyze:
@@ -59,7 +61,7 @@ jobs:
           path: cso-scripts
 
       - name: Build and Analyze with CodeSonar
-        run: python3 cso-scripts/build_and_analyze.py codesonar.conf make -j $PARALLEL CMAKE_BUILD_TYPE=RelWithDebInfo && make install
+        run: python3 cso-scripts/build_and_analyze.py codesonar.conf cmake --build build
 
       - name: Push Summary Report
         if: ${{ github.event.pull_request }}
